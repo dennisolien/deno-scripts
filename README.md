@@ -8,7 +8,7 @@ so the scripts are not well designed, and only tested once on my system(s), they
 ### TODO: 🚀
 
 - [ ] Git diff script
-- [ ] Git delete local branches that are `done`: working on.
+- [X] Git delete local branches that are `done`: somewhat done, but needs a lot of work.
 - [ ] Yarn update
 - [ ] google calender: return list of the day/week
 - [ ] turn slack noti on/off
