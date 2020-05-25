@@ -1,4 +1,4 @@
-# Scripts I create because i'm lazy
+# Scripts I create because i'm lazy 😎
 
 ## Reasons to not use any of my scripts
 1. As the keen observer can deduce from the title, im lazy.
