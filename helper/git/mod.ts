@@ -71,3 +71,16 @@ export async function checkoutBranch(branchName: string) {
   logger.info(`Checkout branch: ${branchName}`);
   return true;
 }
+
+// TODO: test for this;
+export async function getRemoteOriginPath() {
+  const commands = ['remote', '-v'];
+  const denoRun = await gitCommand(commands);
+  const result = await denoSubProcessToString(denoRun);
+  // TODO: use a regEx
+  return result.split('\n')[0]
+    .replace('origin\t', '')
+    .replace('(fetch)', '')
+    .replace(' ', '')
+    .replace('.git', '');
+}
