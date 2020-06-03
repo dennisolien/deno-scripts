@@ -1,4 +1,4 @@
-import { ensureDir, ensureFile, emptyDir } from "https://deno.land/std@0.51.0/fs/mod.ts";
+import { ensureDir, ensureFile, emptyDir, exists, walk } from "https://deno.land/std@0.51.0/fs/mod.ts";
 import { run } from '../sub_process/mod.ts';
 
 export function getApplicationFolderPath(name:string) {
@@ -43,3 +43,14 @@ export async function editFile(filePath: string, openCommand?: string) {
   return open.status();
 }
 
+export async function lsPath(path: string) {
+  const pathExist = await exists(path);
+  if (!pathExist) {
+    return null;
+  }
+  const fileNames = [];
+  for await (const entry of walk(path, { maxDepth: 1 })) {
+    fileNames.push(entry.name);
+  }
+  return fileNames;
+}
