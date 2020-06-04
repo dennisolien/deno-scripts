@@ -40,9 +40,14 @@ async function bump() {
     const yarnRun = await sub.run(['yarn']);
     const yarnString = await sub.denoSubProcessToString(yarnRun);
 
-    logger.info('Running "yarn upgrade"');
-    const yarnUpgrade = await sub.run(['yarn', 'upgrade']);
-    const yarnUpgradeString = await sub.denoSubProcessToString(yarnUpgrade);
+    logger.info('Running "npm update"');
+    const npmUpdateRun = await npm.npmCommand(['update']);
+    const npmUpdateString = await sub.denoSubProcessToString(npmUpdateRun);
+
+    logger.info('Running "yarn install"');
+    const yarnRunAfter = await sub.run(['yarn', 'install']);
+    const yarnStringAfter = await sub.denoSubProcessToString(yarnRunAfter);
+
     return true;
   }
 
@@ -61,6 +66,7 @@ async function validateChanges() {
   const gitStatusRun = await git.gitCommand(['status']);
   const gitStatusString = await sub.denoSubProcessToString(gitStatusRun);
   const gitStatusParsed = gitStatusString.replace(/\t/gi, '').split('\n');
+  // TODO: other actions like delete/rename ++ not allowed
   const gitFilesModified = gitStatusParsed.filter((item) => item.includes('modified:'));
   const gitLegalModified = gitFilesModified.reduce((result, item) => {
     if (!result) {
@@ -80,6 +86,7 @@ async function push() {
   logger.info('Staging changes');
   const gitAddRun = await git.gitCommand(['add', '.']);
   const gitAddString = await sub.denoSubProcessToString(gitAddRun);
+  console.log(gitAddRun);
 
   logger.info('Committing changes');
   const gitCommitRun = await git.gitCommand(['commit', '-m', 'Bump dependencies, with npm update']);
@@ -88,6 +95,7 @@ async function push() {
   logger.info('Pushing to remote');
   const gitPushRun = await git.gitCommand(['push', '--set-upstream', 'origin', bumpBranchName]);
   const gitPushString = await sub.denoSubProcessToString(gitPushRun);
+  console.log(gitPushString);
   return true;
 }
 

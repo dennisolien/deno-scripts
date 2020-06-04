@@ -66,6 +66,12 @@ export async function checkoutBranch(branchName: string) {
   const alreadyOnMsg = `Already on '${branchName}'`;
 
   if (!result.includes(switchedMsg) && !result.includes(alreadyOnMsg)) {
+    const branches = await getBranches()
+    const currentBranch = getCurrentBranch(branches);
+    if (currentBranch === branchName) {
+      logger.info(`Checkout branch: ${branchName}`);
+      return true;
+    }
     throw new Error(`Was unable to checkout branch: ${branchName}, orgMsg: ${result}`);
   }
   logger.info(`Checkout branch: ${branchName}`);
