@@ -1,9 +1,12 @@
 import * as logger from 'https://deno.land/std/log/mod.ts';
 import { v4 as uuid } from 'https://deno.land/std/uuid/mod.ts';
+import { parse } from 'https://deno.land/std@0.51.0/flags/mod.ts';
 import * as fs from '../helper/fs/mod.ts';
 import * as git from '../helper/git/mod.ts';
 import * as sub from '../helper/sub_process/mod.ts';
 import * as npm from '../helper/npm/mod.ts';
+
+const inputArgs = parse(Deno.args);
 
 const localBranches = await git.getBranches();
 const startingBranch = git.getCurrentBranch(localBranches);
@@ -32,6 +35,17 @@ await git.createBranch(bumpBranchName);
 logger.info(`Created new branch ${bumpBranchName}`);
 
 async function bump() {
+  if (inputArgs.y || inputArgs.yarn) {
+    logger.info('Running "yarn"');
+    const yarnRun = await sub.run(['yarn']);
+    const yarnString = await sub.denoSubProcessToString(yarnRun);
+
+    logger.info('Running "yarn upgrade"');
+    const yarnUpgrade = await sub.run(['yarn', 'upgrade']);
+    const yarnUpgradeString = await sub.denoSubProcessToString(yarnUpgrade);
+    return true;
+  }
+
   logger.info('Running "npm ci"');
   const npmCiRun = await npm.npmCommand(['ci']);
   const npmCiString = await sub.denoSubProcessToString(npmCiRun);
@@ -43,7 +57,7 @@ async function bump() {
 
 async function validateChanges() {
   logger.info('Validating changes');
-  const allowedFileChanges = ['modified:   package-lock.json', 'modified:   package.json'];
+  const allowedFileChanges = ['modified:   package-lock.json', 'modified:   package.json', 'modified:   yarn.lock'];
   const gitStatusRun = await git.gitCommand(['status']);
   const gitStatusString = await sub.denoSubProcessToString(gitStatusRun);
   const gitStatusParsed = gitStatusString.replace(/\t/gi, '').split('\n');
