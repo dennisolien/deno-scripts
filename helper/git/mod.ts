@@ -66,10 +66,17 @@ export async function checkoutBranch(branchName: string) {
   const alreadyOnMsg = `Already on '${branchName}'`;
 
   if (!result.includes(switchedMsg) && !result.includes(alreadyOnMsg)) {
-    throw new Error(`Was unable to checkout branch: ${branchName}`);
+    throw new Error(`Was unable to checkout branch: ${branchName}, orgMsg: ${result}`);
   }
   logger.info(`Checkout branch: ${branchName}`);
   return true;
+}
+
+// TODO: test for this;
+export async function createBranch(branchName: string) {
+  const commands = ['checkout', '-b', branchName];
+  const denoRun = await gitCommand(commands);
+  return denoSubProcessToString(denoRun);
 }
 
 // TODO: test for this;

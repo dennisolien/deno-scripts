@@ -20,3 +20,4 @@ so the scripts are not well designed, and only tested once on my system(s), they
 - [ ] create project
     * options: express, ts/js, gql, eslint ++
     * use template repos, and gists.
+- [ ] ls, remote repos. eg. gitls: returns a list of urls to all repos i have access to, filter on org,personal,public ++
