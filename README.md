@@ -21,3 +21,6 @@ so the scripts are not well designed, and only tested once on my system(s), they
     * options: express, ts/js, gql, eslint ++
     * use template repos, and gists.
 - [ ] ls, remote repos. eg. gitls: returns a list of urls to all repos i have access to, filter on org,personal,public ++
+- [ ] script to update index.js files. if all files in a dir have same struct, like model files, loop over and update the exports.
+- [ ] gql script, create boilerplate node,mongo,express gql app. 
+  - [ ] create models,schema,resolver boilerplate
