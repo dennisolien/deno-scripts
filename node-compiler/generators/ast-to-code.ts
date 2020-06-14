@@ -1,5 +1,5 @@
 import { readFileStr } from 'https://deno.land/std@0.51.0/fs/mod.ts';
-import * as sub from '../sub_process/mod.ts';
+import * as sub from '../../helper/sub_process/mod.ts';
 import * as babylon from 'https://cdn.pika.dev/babylon@^6.18.0';
 
 export async function getAST(filePath:string) {
