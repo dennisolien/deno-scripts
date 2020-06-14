@@ -1,5 +1,5 @@
 import { readFileStr, walk } from 'https://deno.land/std@0.51.0/fs/mod.ts';
-import * as parser from './babylon-helper.ts';
+import * as parser from '../parser/parser.ts';
 
 /**
  * Can use a lot of work
