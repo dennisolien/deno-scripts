@@ -77,14 +77,27 @@ export function resolveValue(value:any) {
   throw new Error(`Can not resolve mongo model expression: ${value.type}`);
 } 
 
-export async function getASTBody(filePath:string) {
+export async function getASTFromFile(filePath:string) {
   const sourceCode = await readFileStr(filePath, { encoding: "utf8" });
-  const parsed = babylon.parse(sourceCode, {
+  return babylon.parse(sourceCode, {
     allowImportExportEverywhere: true,
     sourceType: 'module',
     plugins: [
       "objectRestSpread",
     ]
   });
-  return parsed.program.body;
+}
+
+export async function getASTBody(ast:any) {
+  return ast.program.body;
+}
+
+export function getASTFromString(code:string) {
+  return babylon.parse(code, {
+    allowImportExportEverywhere: true,
+    sourceType: 'module',
+    plugins: [
+      "objectRestSpread",
+    ]
+  });
 }

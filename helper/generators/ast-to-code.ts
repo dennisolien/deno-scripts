@@ -1,5 +1,5 @@
 import { readFileStr } from 'https://deno.land/std@0.51.0/fs/mod.ts';
-// import generate from 'https://cdn.pika.dev/@babel/generator@^7.10.2'; // does not work on deno, node funcs.
+import * as sub from '../sub_process/mod.ts';
 import * as babylon from 'https://cdn.pika.dev/babylon@^6.18.0';
 
 export async function getAST(filePath:string) {
@@ -18,8 +18,29 @@ export async function getASTBody(ast:any) {
   return ast.program.body;
 }
 
-
-
+/**
+ * Pipe out to node, to do the code generation.
+ * 
+ * WARNING: I hate this, but im not writing my own generator,
+ * and i cant make the babel one work for Deno, it will take to long.
+ * 
+ * TODO: this will not work, as is unless the project is cloned down.
+ * need to install the node script, in a temp/project folder. so that no setup is needed
+ * by the user.
+ * 
+ * I need to find a better way of create AST and code form AST
+ */
 export async function codeFromAST(ast:string) {
-  // const { code } = generate(ast); // Can not get it to work on Deno
+  const ast64 = btoa(JSON.stringify(ast));
+  const pathToNodeAstToCode = `${import.meta.url}/../../../node-js-code-gen/index.js`.replace('file://', '');
+  const nodeRun = await sub.run(['node', pathToNodeAstToCode, ast64]);
+  const { code } = await nodeRun.status();
+  if (code === 0) {
+    const output = await nodeRun.output();
+    const outputString = new TextDecoder().decode(output);
+    return outputString
+  }
+  const errOutput = await nodeRun.stderrOutput();
+  const errorOutputString = new TextDecoder().decode(errOutput);
+  return errorOutputString
 }
